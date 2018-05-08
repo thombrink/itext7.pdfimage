@@ -4,6 +4,8 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using iText.IO.Font;
+using System.Text.RegularExpressions;
 
 #if NET45
 using System.Drawing;
@@ -17,7 +19,7 @@ using System.DrawingCore.Imaging;
 using System.DrawingCore.Text;
 #endif
 
-namespace itext7.pdfimage.Extensions
+namespace itext.pdfimage.Extensions
 {
     public static class ConvertExtensions
     {
@@ -61,26 +63,26 @@ namespace itext7.pdfimage.Extensions
                             g.DrawImage(imageChunk.Image, imgX, imgY, imgW, imgH);
                         }
 
-                        foreach (var character in textStrat.TextChunks)
+                        foreach (var chunk in textStrat.TextChunks)
                         {
-                            var charX = character.Rect.GetX().PointsToPixels();
-                            var charY = bmp.Height - character.Rect.GetY().PointsToPixels();
+                            var chunkX = chunk.Rect.GetX().PointsToPixels();
+                            var chunkY = bmp.Height - chunk.Rect.GetY().PointsToPixels();
 
-                            var fontSize = character.FontSize.PointsToPixels();
+                            var fontSize = chunk.FontSize.PointsToPixels();
 
                             Font font;
                             try
                             {
-                                font = new Font(character.FontFamily, fontSize, character.FontWeight, GraphicsUnit.Pixel);
+                                font = new Font(chunk.FontFamily, fontSize, chunk.FontStyle, GraphicsUnit.Pixel);
                             }
                             catch (Exception ex)
                             {
                                 //log error
 
-                                font = new Font("Calibri", 11, character.FontWeight, GraphicsUnit.Pixel);
+                                font = new Font("Calibri", 11, chunk.FontStyle, GraphicsUnit.Pixel);
                             }
 
-                            g.DrawString(character.Text, font, Brushes.Black, charX, charY);
+                            g.DrawString(chunk.Text, font, new SolidBrush(chunk.Color), chunkX, chunkY);
                         }
 
                         g.Flush();
@@ -101,6 +103,23 @@ namespace itext7.pdfimage.Extensions
                     yield return ms;
                 }
             }
+        }
+
+        internal static FontStyle GetFontStyle(this FontNames fontNames)
+        {
+            var fontname = fontNames.GetFontName();
+            var fontStyleRegex = Regex.Match(fontname, @"[-,][\w\s]+$");
+
+            if (fontStyleRegex.Success)
+            {
+                var result = fontStyleRegex.Value.ToLower();
+                if (result.Contains("bold"))
+                {
+                    return FontStyle.Bold;
+                }
+            }
+
+            return FontStyle.Regular;
         }
     }
 }

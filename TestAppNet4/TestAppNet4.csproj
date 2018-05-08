@@ -87,9 +87,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\itext7.pdfimage\itext7.pdfimage.csproj">
-      <Project>{8c668fc3-5c81-4414-80be-24b557ed8b94}</Project>
-      <Name>itext7.pdfimage</Name>
+    <ProjectReference Include="..\itext.pdfimage\itext.pdfimage.csproj">
+      <Project>{c6a1ddc0-28d2-484f-9326-2e5bf9c3917c}</Project>
+      <Name>itext.pdfimage</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,8 +1,8 @@
 ﻿using iText.Kernel.Pdf;
-using itext7.pdfimage.Extensions;
+using itext.pdfimage.Extensions;
 using System;
 using System.IO;
-using System.Globalization;
+using System.DrawingCore.Imaging;
 
 namespace TestAppNetCore
 {
@@ -19,7 +19,7 @@ namespace TestAppNetCore
             var bitmaps = pdfDocument.ConvertToBitmaps();
 
             foreach(var bitmap in bitmaps){
-                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), System.DrawingCore.Imaging.ImageFormat.Png);
+                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
             }
 
             Console.WriteLine("Bliep!");

@@ -4,7 +4,7 @@ using System.Drawing;
 using System.DrawingCore;
 #endif
 
-namespace itext7.pdfimage.Models
+namespace itext.pdfimage.Models
 {
     public class ImageChunk
     {

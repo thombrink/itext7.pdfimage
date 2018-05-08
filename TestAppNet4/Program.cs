@@ -1,7 +1,8 @@
 ﻿using iText.Kernel.Pdf;
 using System;
 using System.IO;
-using itext7.pdfimage.Extensions;
+using itext.pdfimage.Extensions;
+using System.Drawing.Imaging;
 
 namespace TestAppNet4
 {
@@ -14,6 +15,11 @@ namespace TestAppNet4
             var reader = new PdfReader(pdf);
             var pdfDocument = new PdfDocument(reader);
             var bitmaps = pdfDocument.ConvertToBitmaps();
+
+            foreach (var bitmap in bitmaps)
+            {
+                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"parse-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+            }
         }
     }
 }

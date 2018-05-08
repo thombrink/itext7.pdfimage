@@ -2,12 +2,19 @@
 using iText.Kernel.Pdf.Canvas.Parser.Data;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using itext.pdfimage.Extensions;
+
+#if NET45
+using System.Drawing;
+#else
+using System.DrawingCore;
+#endif
 
 namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 {
     public class TextListener : LocationTextExtractionStrategy
     {
-        public List<itext7.pdfimage.Models.TextChunk> TextChunks = new List<itext7.pdfimage.Models.TextChunk>();
+        public List<itext.pdfimage.Models.TextChunk> TextChunks = new List<itext.pdfimage.Models.TextChunk>();
 
         public override void EventOccurred(IEventData data, EventType type)
         {
@@ -15,24 +22,47 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
             TextRenderInfo renderInfo = (TextRenderInfo)data;
 
-            var font = renderInfo.GetFont().GetFontProgram().ToString();
-            var fontRegex = Regex.Match(font, @"(?<=\+)[a-zA-Z\s]+");
+            var font = renderInfo.GetFont().GetFontProgram();
+            var originalFontName = font.ToString();
+            var fontRegex = Regex.Match(originalFontName, @"(?<=\+)[a-zA-Z\s]+");
 
-            string fontName = fontRegex.Success ? fontRegex.Value : font;
+            string fontName = fontRegex.Success ? fontRegex.Value : originalFontName;
 
-            var fontWeight = System.DrawingCore.FontStyle.Regular;
-            if(fontName.Contains("Bold")){
-                fontWeight = System.DrawingCore.FontStyle.Bold;
-                //var test = fontName.EndsWith("Bold") || fontName.EndsWith("Oblique");
-                fontName.Replace("Bold", "");
-            }
+            var fontStyle = font.GetFontNames().GetFontStyle();
 
-            float curFontSize = renderInfo.GetFontSize();
+            float curFontSize = renderInfo.GetFontSize();            
 
             IList<TextRenderInfo> text = renderInfo.GetCharacterRenderInfos();
             foreach (TextRenderInfo character in text)
             {
                 string letter = character.GetText();
+
+                Color color;
+
+                //var fillColor = character.GetFillColor();
+                //var colors = fillColor.GetColorValue();
+                //if (colors.Length == 3)
+                //{
+                //    color = Color.FromArgb((int)colors[0], (int)colors[1], (int)colors[2]);
+                //}
+                //else if (colors.Length == 4)
+                //{
+                //    color = Color.FromArgb((int)colors[0], (int)colors[1], (int)colors[2], (int)colors[3]);
+                //}
+                //else
+                //{
+                    color = Color.Black;
+                //}
+
+                //if ((color.R != 0 && color.G != 0 && color.B != 0) || color.A != 255)
+                //{
+
+                //}
+
+                //if (letter.Contains("#"))
+                //{
+
+                //}
 
                 if (string.IsNullOrWhiteSpace(letter)) continue;
 
@@ -41,20 +71,21 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 var topRight = character.GetAscentLine().GetEndPoint();
 
                 //Create a rectangle from it
-                var rect = new Rectangle(
+                var rect = new Geom.Rectangle(
                                                         bottomLeft.Get(Vector.I1),
                                                         topRight.Get(Vector.I2),
                                                         topRight.Get(Vector.I1),
                                                         topRight.Get(Vector.I2)
                                                         );
 
-                var currentChunk = new itext7.pdfimage.Models.TextChunk()
+                var currentChunk = new itext.pdfimage.Models.TextChunk()
                 {
                     Text = letter,
                     Rect = rect,
                     FontFamily = fontName,
                     FontSize = (int)curFontSize,
-                    FontWeight = fontWeight,
+                    FontStyle = fontStyle,
+                    Color = color,
                     SpaceWidth = character.GetSingleSpaceWidth() / 2f
                 };
 
