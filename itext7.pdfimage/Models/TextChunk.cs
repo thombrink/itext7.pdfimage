@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace iTextTest.Models
+namespace itext7.pdfimage.Models
 {
     public class TextChunk
     {

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if NET45
+using System.Drawing;
+#else 
 using System.DrawingCore;
-using System.Text;
+#endif
 
-namespace iTextTest.Models
+namespace itext7.pdfimage.Models
 {
     public class ImageChunk
     {

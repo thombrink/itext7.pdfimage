@@ -1,10 +1,13 @@
 ﻿using iText.Kernel.Pdf.Canvas.Parser.Data;
-using iTextTest.Models;
-using System;
+using itext7.pdfimage.Models;
 using System.Collections.Generic;
-using System.DrawingCore;
 using System.IO;
-using System.Text;
+
+#if NET45
+using System.Drawing;
+#else 
+using System.DrawingCore;
+#endif
 
 namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 {

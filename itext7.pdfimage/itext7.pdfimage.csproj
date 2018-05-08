@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>ThomSoft.itext7.pdfimage</PackageId>
+    <Version>1.0.0-beta1</Version>
+    <Authors>Thom Brink</Authors>
+    <Company>Thom Brink</Company>
+    <RepositoryUrl>https://github.com/thombrink/itext7.pdfimage</RepositoryUrl>
+  </PropertyGroup>
+
+  <!-- Need to conditionally bring in references for the .NET Framework 4.5 target -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="ZKWeb.System.Drawing" Version="4.0.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="7.1.2" />
+  </ItemGroup>
+
+</Project>

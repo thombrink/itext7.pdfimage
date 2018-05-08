@@ -7,7 +7,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 {
     public class TextListener : LocationTextExtractionStrategy
     {
-        public List<iTextTest.Models.TextChunk> TextChunks = new List<iTextTest.Models.TextChunk>();
+        public List<itext7.pdfimage.Models.TextChunk> TextChunks = new List<itext7.pdfimage.Models.TextChunk>();
 
         public override void EventOccurred(IEventData data, EventType type)
         {
@@ -44,7 +44,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                                                         topRight.Get(Vector.I2)
                                                         );
 
-                var currentChunk = new iTextTest.Models.TextChunk()
+                var currentChunk = new itext7.pdfimage.Models.TextChunk()
                 {
                     Text = letter,
                     Rect = rect,

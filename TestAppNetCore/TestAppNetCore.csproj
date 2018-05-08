@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="itext7" Version="7.1.0" />
-    <PackageReference Include="ZKWeb.System.Drawing" Version="4.0.1" />
+    <PackageReference Include="itext7" Version="7.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\itext7.pdfimage\itext7.pdfimage.csproj" />
   </ItemGroup>
 
 </Project>

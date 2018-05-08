@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace iTextTest.Extensions
+namespace itext7.pdfimage.Extensions
 {
     public static class MeasuringExtensions
     {
