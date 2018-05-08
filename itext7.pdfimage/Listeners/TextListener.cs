@@ -20,8 +20,12 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
             string fontName = fontRegex.Success ? fontRegex.Value : font;
 
-            //var test = fontName.EndsWith("Bold") || fontName.EndsWith("Oblique");
-            fontName.Replace("Bold", "");
+            var fontWeight = System.DrawingCore.FontStyle.Regular;
+            if(fontName.Contains("Bold")){
+                fontWeight = System.DrawingCore.FontStyle.Bold;
+                //var test = fontName.EndsWith("Bold") || fontName.EndsWith("Oblique");
+                fontName.Replace("Bold", "");
+            }
 
             float curFontSize = renderInfo.GetFontSize();
 
@@ -39,7 +43,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 //Create a rectangle from it
                 var rect = new Rectangle(
                                                         bottomLeft.Get(Vector.I1),
-                                                        bottomLeft.Get(Vector.I2),
+                                                        topRight.Get(Vector.I2),
                                                         topRight.Get(Vector.I1),
                                                         topRight.Get(Vector.I2)
                                                         );
@@ -50,6 +54,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                     Rect = rect,
                     FontFamily = fontName,
                     FontSize = (int)curFontSize,
+                    FontWeight = fontWeight,
                     SpaceWidth = character.GetSingleSpaceWidth() / 2f
                 };
 

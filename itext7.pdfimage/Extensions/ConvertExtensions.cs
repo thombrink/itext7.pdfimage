@@ -51,6 +51,16 @@ namespace itext7.pdfimage.Extensions
                         g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                         g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 
+                        foreach (var imageChunk in imageStrat.ImagesChunks)
+                        {
+                            var imgW = imageChunk.W.PointsToPixels();
+                            var imgH = imageChunk.H.PointsToPixels();
+                            var imgX = imageChunk.X.PointsToPixels();
+                            var imgY = (size.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
+
+                            g.DrawImage(imageChunk.Image, imgX, imgY, imgW, imgH);
+                        }
+
                         foreach (var character in textStrat.TextChunks)
                         {
                             var charX = character.Rect.GetX().PointsToPixels();
@@ -61,26 +71,16 @@ namespace itext7.pdfimage.Extensions
                             Font font;
                             try
                             {
-                                font = new Font(character.FontFamily, fontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+                                font = new Font(character.FontFamily, fontSize, character.FontWeight, GraphicsUnit.Pixel);
                             }
                             catch (Exception ex)
                             {
                                 //log error
 
-                                font = new Font("Calibri", 11, FontStyle.Regular, GraphicsUnit.Pixel);
+                                font = new Font("Calibri", 11, character.FontWeight, GraphicsUnit.Pixel);
                             }
 
                             g.DrawString(character.Text, font, Brushes.Black, charX, charY);
-                        }
-
-                        foreach (var imageChunk in imageStrat.ImagesChunks)
-                        {
-                            var imgW = imageChunk.W.PointsToPixels();
-                            var imgH = imageChunk.H.PointsToPixels();
-                            var imgX = imageChunk.X.PointsToPixels();
-                            var imgY = (size.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
-
-                            g.DrawImage(imageChunk.Image, imgX, imgY, imgW, imgH);
                         }
 
                         g.Flush();
