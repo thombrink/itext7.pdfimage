@@ -10,7 +10,7 @@ using System.DrawingCore;
 
 namespace itext.pdfimage.Models
 {
-    public class TextChunk
+    public class TextChunk : IChunk
     {
         public string Text { get; set; }
         public iText.Kernel.Geom.Rectangle Rect { get; set; }
