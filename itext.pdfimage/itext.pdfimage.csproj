@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>ThomSoft.itext7.pdfimage</PackageId>
-    <Version>1.0.0-beta1</Version>
+    <Version>1.0.0-rc1</Version>
     <Authors>Thom Brink</Authors>
     <Company>Thom Brink</Company>
     <RepositoryUrl>https://github.com/thombrink/itext7.pdfimage</RepositoryUrl>

@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\itext7.pdfimage\itext7.pdfimage.csproj" />
+    <ProjectReference Include="..\itext.pdfimage\itext.pdfimage.csproj" />
   </ItemGroup>
 
 </Project>

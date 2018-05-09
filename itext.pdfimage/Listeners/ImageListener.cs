@@ -1,5 +1,5 @@
 ﻿using iText.Kernel.Pdf.Canvas.Parser.Data;
-using itext7.pdfimage.Models;
+using itext.pdfimage.Models;
 using System.Collections.Generic;
 using System.IO;
 
