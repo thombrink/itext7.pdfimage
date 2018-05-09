@@ -6,7 +6,7 @@ using System.DrawingCore;
 
 namespace itext.pdfimage.Models
 {
-    public class ImageChunk
+    public class ImageChunk : IChunk
     {
         public float X { get; set; }
         public float Y { get; set; }

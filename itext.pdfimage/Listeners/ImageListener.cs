@@ -2,6 +2,8 @@
 using itext.pdfimage.Models;
 using System.Collections.Generic;
 using System.IO;
+using System;
+using System.Threading;
 
 #if NET45
 using System.Drawing;
@@ -13,11 +15,20 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 {
     public class ImageListener : FilteredEventListener
     {
-        public List<ImageChunk> ImagesChunks { get; set; } = new List<ImageChunk>();
+        private readonly SortedDictionary<float, IChunk> chunkDictionairy;
+        private Func<float> increaseCounter;
+
+        public ImageListener(SortedDictionary<float, IChunk> chunkDictionairy, Func<float> increaseCounter)
+        {
+            this.chunkDictionairy = chunkDictionairy;
+            this.increaseCounter = increaseCounter;
+        }
 
         public override void EventOccurred(IEventData data, EventType type)
         {
             if (type != EventType.RENDER_IMAGE) return;
+
+            float counter = increaseCounter();
 
             var renderInfo = (ImageRenderInfo)data;
 
@@ -34,7 +45,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 Image = Image.FromStream(new MemoryStream(renderInfo.GetImage().GetImageBytes()))
             };
 
-            ImagesChunks.Add(imageChunk);
+            chunkDictionairy.Add(counter, imageChunk);
 
             base.EventOccurred(data, type);
         }
