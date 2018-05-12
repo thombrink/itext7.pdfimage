@@ -44,11 +44,21 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
             float curFontSize = renderInfo.GetFontSize();
 
+            if (curFontSize == 1)
+            {
+                var tm = renderInfo.GetTextMatrix();
+                curFontSize = tm.Get(1);
+            }
+
             float key = counter;
 
             IList<TextRenderInfo> text = renderInfo.GetCharacterRenderInfos();
             foreach (TextRenderInfo character in text)
             {
+                string letter = character.GetText();
+
+                if (string.IsNullOrWhiteSpace(letter)) continue;
+
                 key += 0.001f;
 
                 //var textRenderMode = character.GetTextRenderMode();
@@ -59,24 +69,22 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
                 //}
 
-                string letter = character.GetText();
-
                 Color color;
 
-                //var fillColor = character.GetFillColor();
-                //var colors = fillColor.GetColorValue();
-                //if (colors.Length == 3)
-                //{
-                //    color = Color.FromArgb((int)colors[0], (int)colors[1], (int)colors[2]);
-                //}
-                //else if (colors.Length == 4)
-                //{
-                //    color = Color.FromArgb((int)colors[0], (int)colors[1], (int)colors[2], (int)colors[3]);
-                //}
-                //else
-                //{
+                var fillColor = character.GetFillColor();
+                var colors = fillColor.GetColorValue();
+                if (colors.Length == 3)
+                {
+                    color = Color.FromArgb((int)(colors[0] * 255), (int)(colors[1] * 255), (int)(colors[2] * 255));
+                }
+                else if (colors.Length == 4)
+                {
+                    color = Color.FromArgb((int)(colors[0] * 255), (int)(colors[1] * 255), (int)(colors[2] * 255), (int)(colors[3] * 255));
+                }
+                else
+                {
                     color = Color.Black;
-                //}
+                }
 
                 //if ((color.R != 0 && color.G != 0 && color.B != 0) || color.A != 255)
                 //{
@@ -87,8 +95,6 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 //{
 
                 //}
-
-                if (string.IsNullOrWhiteSpace(letter)) continue;
 
                 //Get the bounding box for the chunk of text
                 var bottomLeft = character.GetDescentLine().GetStartPoint();
@@ -101,6 +107,10 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                                                         topRight.Get(Vector.I1),
                                                         topRight.Get(Vector.I2)
                                                         );
+
+                var tm = character.GetTextMatrix();
+                rect.SetX(tm.Get(Matrix.I31));
+                rect.SetY(tm.Get(Matrix.I32));
 
                 var currentChunk = new itext.pdfimage.Models.TextChunk()
                 {

@@ -94,18 +94,22 @@ namespace itext.pdfimage
                                 try
                                 {
                                     font = new Font(textChunk.FontFamily, fontSize, textChunk.FontStyle, GraphicsUnit.Pixel);
+                                    //font = new Font("Calibri", MeasuringExtensions.PointsToPixels(11), textChunk.FontStyle, GraphicsUnit.Pixel);
                                 }
                                 catch (Exception ex)
                                 {
                                     //log error
 
-                                    font = new Font("Calibri", 11, textChunk.FontStyle, GraphicsUnit.Pixel);
+                                    font = new Font("Calibri", MeasuringExtensions.PointsToPixels(11), textChunk.FontStyle, GraphicsUnit.Pixel);
                                 }
 
                                 g.TranslateTransform(chunkX, chunkY, MatrixOrder.Append);
 
+                                //g.DrawRectangle(new Pen(textChunk.Color, 1), chunkX, chunkY, textChunk.Rect.GetWidth(), textChunk.Rect.GetHeight());
+
                                 //g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), chunkX, chunkY);
                                 g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), 0, 0);
+                                //g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), new RectangleF(0, 0, textChunk.Rect.GetWidth(), textChunk.Rect.GetHeight()));
                             }
                         }
 

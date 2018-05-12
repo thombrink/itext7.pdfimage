@@ -1,9 +1,9 @@
-﻿using iText.Kernel.Pdf.Canvas.Parser.Data;
-using itext.pdfimage.Models;
+﻿using itext.pdfimage.Models;
 using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Threading;
+using iText.Kernel.Pdf.Canvas.Parser.Data;
 
 #if NET45
 using System.Drawing;
@@ -34,7 +34,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
             var matix = renderInfo.GetImageCtm();
 
-            var startPoint = renderInfo.GetStartPoint();
+            var image = renderInfo.GetImage();
 
             var imageChunk = new ImageChunk
             {
@@ -44,6 +44,12 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 H = matix.Get(Geom.Matrix.I22),
                 Image = Image.FromStream(new MemoryStream(renderInfo.GetImage().GetImageBytes()))
             };
+
+            if(imageChunk.H == 0)
+            {
+                imageChunk.H = image.GetHeight();
+                imageChunk.W = image.GetWidth();
+            }
 
             chunkDictionairy.Add(counter, imageChunk);
 

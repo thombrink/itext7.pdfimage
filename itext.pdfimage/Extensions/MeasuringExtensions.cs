@@ -9,7 +9,7 @@ namespace itext.pdfimage.Extensions
         //72 points == 1
         //72px x 72px is 1inch x 1inch at a 72dpi resolution
 
-        public static int Dpi { get; set; } = 300;
+        public static int Dpi { get; set; } = 600;
 
         public static float PixelsToPoints(this float value, int? dpi = null)
         {
