@@ -3,13 +3,7 @@ using itext.pdfimage.Models;
 using System.Collections.Generic;
 using System.IO;
 using System;
-using System.Threading;
-
-#if NET45
 using System.Drawing;
-#else 
-using System.DrawingCore;
-#endif
 
 namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 {

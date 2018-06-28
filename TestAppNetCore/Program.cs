@@ -2,7 +2,7 @@
 using itext.pdfimage.Extensions;
 using System;
 using System.IO;
-using System.DrawingCore.Imaging;
+using System.Drawing.Imaging;
 
 namespace TestAppNetCore
 {
@@ -16,11 +16,16 @@ namespace TestAppNetCore
 
             var reader = new PdfReader(pdf);
             var pdfDocument = new PdfDocument(reader);
-            var bitmaps = pdfDocument.ConvertToBitmaps();
+            //var bitmaps = pdfDocument.ConvertToBitmaps();
 
-            foreach(var bitmap in bitmaps){
-                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
-            }
+            //foreach (var bitmap in bitmaps)
+            //{
+            //    bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+            //}
+
+            var page1 = pdfDocument.GetPage(2);
+            var bitmap1 = page1.ConvertPageToBitmap();
+            bitmap1.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-page1-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
 
             Console.WriteLine("Bliep!");
         }

@@ -6,20 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using iText.IO.Font;
 using System.Text.RegularExpressions;
-using System.Collections;
-using itext.pdfimage.Models;
 
-#if NET45
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
-#else
-using System.DrawingCore;
-using System.DrawingCore.Drawing2D;
-using System.DrawingCore.Imaging;
-using System.DrawingCore.Text;
-#endif
 
 namespace itext.pdfimage.Extensions
 {
@@ -31,10 +22,22 @@ namespace itext.pdfimage.Extensions
             return converter.ConvertToBitmaps(pdfDocument);
         }
 
+        public static Bitmap ConvertPageToBitmap(this PdfPage pdfPage)
+        {
+            var converter = new PdfToImageConverter();
+            return converter.ConvertToBitmap(pdfPage);
+        }
+
         public static IEnumerable<Stream> ConvertToJpgStreams(this PdfDocument pdfDocument)
         {
             var converter = new PdfToImageConverter();
             return converter.ConvertToJpgStreams(pdfDocument);
+        }
+
+        public static Stream ConvertPageToJpg(this PdfPage pdfPage)
+        {
+            var converter = new PdfToImageConverter();
+            return converter.ConvertToJpgStream(pdfPage);
         }
 
         internal static FontStyle GetFontStyle(this FontNames fontNames)

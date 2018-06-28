@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using itext.pdfimage.Extensions;
 using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace TestAppNet4
 {
@@ -10,7 +11,7 @@ namespace TestAppNet4
     {
         static void Main(string[] args)
         {
-            var pdf = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "landscape.pdf"), FileMode.Open);
+            var pdf = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "wave.pdf"), FileMode.Open);
 
             var reader = new PdfReader(pdf);
             var pdfDocument = new PdfDocument(reader);
@@ -18,8 +19,12 @@ namespace TestAppNet4
 
             foreach (var bitmap in bitmaps)
             {
-                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"landscape-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
             }
+
+            var page1 = pdfDocument.GetPage(1);
+            var bitmap1 = page1.ConvertPageToBitmap();
+            bitmap1.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-page1-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
         }
     }
 }

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Drawing;
 
-#if NET45
-using System.Drawing;
-#else
-using System.DrawingCore;
-#endif
 
 namespace itext.pdfimage.Models
 {

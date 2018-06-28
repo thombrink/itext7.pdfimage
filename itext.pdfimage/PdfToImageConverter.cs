@@ -11,17 +11,11 @@ using itext.pdfimage.Models;
 using itext.pdfimage.Extensions;
 using System.Threading;
 
-#if NET45
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
-#else
-using System.DrawingCore;
-using System.DrawingCore.Drawing2D;
-using System.DrawingCore.Imaging;
-using System.DrawingCore.Text;
-#endif
+
 
 namespace itext.pdfimage
 {
@@ -39,81 +33,7 @@ namespace itext.pdfimage
             {
                 var currentPage = pdfDocument.GetPage(i);
 
-                var rotation = currentPage.GetRotation();
-
-                var chunkDictionairy = new SortedDictionary<float, IChunk>();
-
-                FilteredEventListener listener = new FilteredEventListener();
-                listener.AttachEventListener(new TextListener(chunkDictionairy, IncreaseCounter));
-                listener.AttachEventListener(new ImageListener(chunkDictionairy, IncreaseCounter));
-                PdfCanvasProcessor processor = new PdfCanvasProcessor(listener);
-                processor.ProcessPageContent(currentPage);
-
-                //var size = currentPage.GetPageSizeWithRotation();
-                var size = currentPage.GetPageSize();
-
-                var width = size.GetWidth().PointsToPixels();
-                var height = size.GetHeight().PointsToPixels();
-
-                using (Bitmap bmp = new Bitmap(width, height))
-                {
-                    using (Graphics g = Graphics.FromImage(bmp))
-                    {
-                        g.FillRectangle(Brushes.White, 0, 0, bmp.Width, bmp.Height);
-
-                        g.SmoothingMode = SmoothingMode.AntiAlias;
-                        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-
-                        foreach (var chunk in chunkDictionairy)
-                        {
-                            g.ResetTransform();
-
-                            g.RotateTransform(-rotation);
-
-                            if (chunk.Value is Models.ImageChunk imageChunk)
-                            {
-                                var imgW = imageChunk.W.PointsToPixels();
-                                var imgH = imageChunk.H.PointsToPixels();
-                                var imgX = imageChunk.X.PointsToPixels();
-                                var imgY = (size.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
-
-                                g.TranslateTransform(imgX, imgY, MatrixOrder.Append);
-
-                                g.DrawImage(imageChunk.Image, imgX, imgY, imgW, imgH);
-                            }
-                            else if (chunk.Value is Models.TextChunk textChunk)
-                            {
-                                var chunkX = textChunk.Rect.GetX().PointsToPixels();
-                                var chunkY = bmp.Height - textChunk.Rect.GetY().PointsToPixels();
-
-                                var fontSize = textChunk.FontSize.PointsToPixels();
-
-                                Font font;
-                                try
-                                {
-                                    font = new Font(textChunk.FontFamily, fontSize, textChunk.FontStyle, GraphicsUnit.Pixel);
-                                }
-                                catch (Exception ex)
-                                {
-                                    //log error
-
-                                    font = new Font("Calibri", 11, textChunk.FontStyle, GraphicsUnit.Pixel);
-                                }
-
-                                g.TranslateTransform(chunkX, chunkY, MatrixOrder.Append);
-
-                                //g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), chunkX, chunkY);
-                                g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), 0, 0);
-                            }
-                        }
-
-                        g.Flush();
-                    }
-
-                    yield return bmp;
-                }
+                yield return ConvertToBitmap(currentPage);
             }
         }
 
@@ -126,6 +46,96 @@ namespace itext.pdfimage
                     bmp.Save(ms, ImageFormat.Jpeg);
                     yield return ms;
                 }
+                bmp.Dispose();
+            }
+        }
+
+        public Bitmap ConvertToBitmap(PdfPage pdfPage)
+        {
+            var rotation = pdfPage.GetRotation();
+
+            var chunkDictionairy = new SortedDictionary<float, IChunk>();
+
+            FilteredEventListener listener = new FilteredEventListener();
+            listener.AttachEventListener(new TextListener(chunkDictionairy, IncreaseCounter));
+            listener.AttachEventListener(new ImageListener(chunkDictionairy, IncreaseCounter));
+            PdfCanvasProcessor processor = new PdfCanvasProcessor(listener);
+            processor.ProcessPageContent(pdfPage);
+
+            //var size = currentPage.GetPageSizeWithRotation();
+            var size = pdfPage.GetPageSize();
+
+            var width = size.GetWidth().PointsToPixels();
+            var height = size.GetHeight().PointsToPixels();
+
+            Bitmap bmp = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.FillRectangle(Brushes.White, 0, 0, bmp.Width, bmp.Height);
+
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+
+                foreach (var chunk in chunkDictionairy)
+                {
+                    g.ResetTransform();
+
+                    g.RotateTransform(-rotation);
+
+                    if (chunk.Value is Models.ImageChunk imageChunk)
+                    {
+                        var imgW = imageChunk.W.PointsToPixels();
+                        var imgH = imageChunk.H.PointsToPixels();
+                        var imgX = imageChunk.X.PointsToPixels();
+                        var imgY = (size.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
+
+                        g.TranslateTransform(imgX, imgY, MatrixOrder.Append);
+
+                        //g.DrawImage(imageChunk.Image, imgX, imgY, imgW, imgH);
+                        g.DrawImage(imageChunk.Image, 0, 0, imgW, imgH);
+                    }
+                    else if (chunk.Value is Models.TextChunk textChunk)
+                    {
+                        var chunkX = textChunk.Rect.GetX().PointsToPixels();
+                        var chunkY = bmp.Height - textChunk.Rect.GetY().PointsToPixels();
+
+                        var fontSize = textChunk.FontSize.PointsToPixels();
+
+                        Font font;
+                        try
+                        {
+                            font = new Font(textChunk.FontFamily, fontSize, textChunk.FontStyle, GraphicsUnit.Pixel);
+                        }
+                        catch (Exception ex)
+                        {
+                            //log error
+
+                            font = new Font("Calibri", 11, textChunk.FontStyle, GraphicsUnit.Pixel);
+                        }
+
+                        g.TranslateTransform(chunkX, chunkY, MatrixOrder.Append);
+
+                        //g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), chunkX, chunkY);
+                        g.DrawString(textChunk.Text, font, new SolidBrush(textChunk.Color), 0, 0);
+                    }
+                }
+
+                g.Flush();
+            }
+
+            return bmp;
+        }
+
+        public Stream ConvertToJpgStream(PdfPage pdfPage)
+        {
+            var bmp = ConvertToBitmap(pdfPage);
+            using (var ms = new MemoryStream())
+            {
+                bmp.Save(ms, ImageFormat.Jpeg);
+                bmp.Dispose();
+                return ms;
             }
         }
 

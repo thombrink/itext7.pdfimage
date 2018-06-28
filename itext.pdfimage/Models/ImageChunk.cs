@@ -1,8 +1,4 @@
-﻿#if NET45
-using System.Drawing;
-#else 
-using System.DrawingCore;
-#endif
+﻿using System.Drawing;
 
 namespace itext.pdfimage.Models
 {
