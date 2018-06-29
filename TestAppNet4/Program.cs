@@ -20,11 +20,13 @@ namespace TestAppNet4
             foreach (var bitmap in bitmaps)
             {
                 bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+                bitmap.Dispose();
             }
 
             var page1 = pdfDocument.GetPage(1);
             var bitmap1 = page1.ConvertPageToBitmap();
             bitmap1.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-page1-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+            bitmap1.Dispose();
         }
     }
 }

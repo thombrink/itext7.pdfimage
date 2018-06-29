@@ -16,16 +16,18 @@ namespace TestAppNetCore
 
             var reader = new PdfReader(pdf);
             var pdfDocument = new PdfDocument(reader);
-            //var bitmaps = pdfDocument.ConvertToBitmaps();
+            var bitmaps = pdfDocument.ConvertToBitmaps();
 
-            //foreach (var bitmap in bitmaps)
-            //{
-            //    bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
-            //}
+            foreach (var bitmap in bitmaps)
+            {
+                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+                bitmap.Dispose();
+            }
 
-            var page1 = pdfDocument.GetPage(2);
+            var page1 = pdfDocument.GetPage(1);
             var bitmap1 = page1.ConvertPageToBitmap();
             bitmap1.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-page1-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+            bitmap1.Dispose();
 
             Console.WriteLine("Bliep!");
         }
