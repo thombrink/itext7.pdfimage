@@ -5,13 +5,7 @@ using System.Text.RegularExpressions;
 using itext.pdfimage.Extensions;
 using itext.pdfimage.Models;
 using System;
-using System.Threading;
-
-#if NET45
 using System.Drawing;
-#else
-using System.DrawingCore;
-#endif
 
 namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 {
@@ -51,8 +45,8 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
             {
                 key += 0.001f;
 
-                //var textRenderMode = character.GetTextRenderMode();
-                //var opacity = character.GetGraphicsState().GetFillOpacity();
+                var textRenderMode = character.GetTextRenderMode();
+                var opacity = character.GetGraphicsState().GetFillOpacity();
 
                 //if (textRenderMode != 0 || opacity != 1)
                 //{
@@ -63,27 +57,26 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
                 Color color;
 
-                //var fillColor = character.GetFillColor();
-                //var colors = fillColor.GetColorValue();
-                //if (colors.Length == 3)
-                //{
-                //    color = Color.FromArgb((int)colors[0], (int)colors[1], (int)colors[2]);
-                //}
-                //else if (colors.Length == 4)
-                //{
-                //    color = Color.FromArgb((int)colors[0], (int)colors[1], (int)colors[2], (int)colors[3]);
-                //}
-                //else
-                //{
+                var fillColor = character.GetFillColor();
+                var colors = fillColor.GetColorValue();
+                if(colors.Length == 1)
+                {
+                    color = Color.FromArgb((int)(255 * (1 - colors[0])), Color.Black);
+                }
+                else if (colors.Length == 3)
+                {
+                    color = Color.FromArgb((int)(255 * colors[0]), (int)(255 * colors[1]), (int)(255 * colors[2]));
+                }
+                else if (colors.Length == 4)
+                {
+                    color = Color.FromArgb((int)(255 * colors[0]), (int)(255 * colors[1]), (int)(255 * colors[2]), (int)(255 * colors[3]));
+                }
+                else
+                {
                     color = Color.Black;
-                //}
+                }
 
-                //if ((color.R != 0 && color.G != 0 && color.B != 0) || color.A != 255)
-                //{
-
-                //}
-
-                //if (letter.Contains("#"))
+                //if(letter == "A")
                 //{
 
                 //}
