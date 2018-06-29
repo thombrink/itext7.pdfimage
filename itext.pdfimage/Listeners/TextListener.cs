@@ -48,10 +48,10 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 var textRenderMode = character.GetTextRenderMode();
                 var opacity = character.GetGraphicsState().GetFillOpacity();
 
-                if (textRenderMode != 0 || opacity != 1)
-                {
+                //if (textRenderMode != 0 || opacity != 1)
+                //{
 
-                }
+                //}
 
                 string letter = character.GetText();
 
@@ -76,10 +76,10 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                     color = Color.Black;
                 }
 
-                if(letter == "A")
-                {
+                //if(letter == "A")
+                //{
 
-                }
+                //}
 
                 if (string.IsNullOrWhiteSpace(letter)) continue;
 
