@@ -28,7 +28,17 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
 
             var matix = renderInfo.GetImageCtm();
 
-            var startPoint = renderInfo.GetStartPoint();
+            var image = renderInfo.GetImage();
+            byte[] imageBytes;
+
+            try
+            {
+                imageBytes = image.GetImageBytes();
+            }
+            catch
+            {
+                return;
+            }
 
             var imageChunk = new ImageChunk
             {
@@ -36,7 +46,7 @@ namespace iText.Kernel.Pdf.Canvas.Parser.Listener
                 Y = matix.Get(Geom.Matrix.I32),
                 W = matix.Get(Geom.Matrix.I11),
                 H = matix.Get(Geom.Matrix.I22),
-                Image = Image.FromStream(new MemoryStream(renderInfo.GetImage().GetImageBytes()))
+                Image = Image.FromStream(new MemoryStream(imageBytes))
             };
 
             chunkDictionairy.Add(counter, imageChunk);
