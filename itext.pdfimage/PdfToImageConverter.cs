@@ -4,9 +4,6 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using iText.IO.Font;
-using System.Text.RegularExpressions;
-using System.Collections;
 using itext.pdfimage.Models;
 using itext.pdfimage.Extensions;
 using System.Threading;
@@ -92,9 +89,8 @@ namespace itext.pdfimage
                         var imgY = (size.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
 
                         g.TranslateTransform(imgX, imgY, MatrixOrder.Append);
-
-                        //g.DrawImage(imageChunk.Image, imgX, imgY, imgW, imgH);
                         g.DrawImage(imageChunk.Image, 0, 0, imgW, imgH);
+                        imageChunk.Image.Dispose();
                     }
                     else if (chunk.Value is Models.TextChunk textChunk)
                     {
