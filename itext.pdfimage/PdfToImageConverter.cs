@@ -66,6 +66,7 @@ namespace itext.pdfimage
             var height = size.GetHeight().PointsToPixels();
 
             Bitmap bmp = new Bitmap(width, height);
+            bmp.SetResolution(MeasuringExtensions.Dpi, MeasuringExtensions.Dpi);
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.FillRectangle(Brushes.White, 0, 0, bmp.Width, bmp.Height);
