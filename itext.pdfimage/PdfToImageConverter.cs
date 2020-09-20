@@ -59,11 +59,11 @@ namespace itext.pdfimage
             PdfCanvasProcessor processor = new PdfCanvasProcessor(listener);
             processor.ProcessPageContent(pdfPage);
 
-            //var size = currentPage.GetPageSizeWithRotation();
-            var size = pdfPage.GetPageSize();
+            var bmpSize = pdfPage.GetPageSizeWithRotation();
+            var pageSize = pdfPage.GetPageSize();
 
-            var width = size.GetWidth().PointsToPixels();
-            var height = size.GetHeight().PointsToPixels();
+            var width = bmpSize.GetWidth().PointsToPixels();
+            var height = bmpSize.GetHeight().PointsToPixels();
 
             Bitmap bmp = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(bmp))
@@ -79,16 +79,21 @@ namespace itext.pdfimage
                 {
                     g.ResetTransform();
 
-                    g.RotateTransform(-rotation);
+                    g.RotateTransform(rotation);
+
+                    // translate the rotated page centre into the bitmap centre
+                    var ctr = new PointF[] { new PointF(pageSize.GetWidth().PointsToPixels(), pageSize.GetHeight().PointsToPixels()) };
+                    g.Transform.TransformPoints(ctr);
+                    g.TranslateTransform(width / 2 - ctr[0].X / 2, height / 2 - ctr[0].Y / 2, MatrixOrder.Append);
 
                     if (chunk.Value is Models.ImageChunk imageChunk)
                     {
                         var imgW = imageChunk.W.PointsToPixels();
                         var imgH = imageChunk.H.PointsToPixels();
                         var imgX = imageChunk.X.PointsToPixels();
-                        var imgY = (size.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
+                        var imgY = (pageSize.GetHeight() - imageChunk.Y - imageChunk.H).PointsToPixels();
 
-                        g.TranslateTransform(imgX, imgY, MatrixOrder.Append);
+                        g.TranslateTransform(imgX, imgY, MatrixOrder.Prepend);
                         g.DrawImage(imageChunk.Image, 0, 0, imgW, imgH);
                         imageChunk.Image.Dispose();
                     }
