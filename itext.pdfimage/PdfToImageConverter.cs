@@ -38,11 +38,9 @@ namespace itext.pdfimage
         {
             foreach (var bmp in ConvertToBitmaps(pdfDocument))
             {
-                using (var ms = new MemoryStream())
-                {
-                    bmp.Save(ms, ImageFormat.Jpeg);
-                    yield return ms;
-                }
+                var ms = new MemoryStream()
+                bmp.Save(ms, ImageFormat.Jpeg);
+                yield return ms;
                 bmp.Dispose();
             }
         }
@@ -127,12 +125,10 @@ namespace itext.pdfimage
         public Stream ConvertToJpgStream(PdfPage pdfPage)
         {
             var bmp = ConvertToBitmap(pdfPage);
-            using (var ms = new MemoryStream())
-            {
-                bmp.Save(ms, ImageFormat.Jpeg);
-                bmp.Dispose();
-                return ms;
-            }
+            var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Jpeg);
+            bmp.Dispose();
+            return ms;
         }
 
         private Func<float> IncreaseCounter = () => counter = Interlocked.Increment(ref counter);
